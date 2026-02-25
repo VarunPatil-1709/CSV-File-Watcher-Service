@@ -1,43 +1,35 @@
-CSV FILE WATCHER SERVICE
-Spring Boot Event-Driven CSV Ingestion System
+# CSV File Watcher Service
 
-------------------------------------------------------------
+## Overview
 
-PROJECT OVERVIEW
+CSV File Watcher Service is a Spring Boot backend application that monitors a configured directory for newly added CSV files.  
+When a CSV file is detected, the system parses its content and inserts the data into a MySQL database.
 
-This project is a Spring Boot-based backend service that automatically monitors a configured directory for newly added CSV files.
+After processing:
+- Successfully processed files are moved to the `processed` folder.
+- Failed files are moved to the `error` folder.
 
-When a CSV file is detected, the system:
+This project is designed for single-server, low-load environments.
 
-1. Reads the file using Java NIO BufferedReader
-2. Parses the CSV using Apache Commons CSV
-3. Maps each row to a DTO object
-4. Converts DTO to Entity
-5. Inserts records into a MySQL database using JPA batch processing
-6. Moves the file to a "processed" folder if successful
-7. Moves the file to an "error" folder if processing fails
+---
 
-This solution is designed for single-server, low-load environments.
+## How It Works
 
-------------------------------------------------------------
+1. Application starts.
+2. Java NIO WatchService monitors the import directory.
+3. When a `.csv` file is created:
+   - The file is read using `BufferedReader`.
+   - Data is parsed using Apache Commons CSV.
+   - Each row is mapped to a DTO.
+   - DTO is converted to Entity.
+   - Data is batch inserted using Spring Data JPA.
+4. The file is moved to:
+   - `processed/` if successful
+   - `error/` if an exception occurs
 
-SYSTEM ARCHITECTURE FLOW
+---
 
-File Drop (CSV)
-        ↓
-WatchService (Java NIO)
-        ↓
-CSV Parser
-        ↓
-DTO Mapping
-        ↓
-JPA Batch Insert
-        ↓
-Move File (processed / error)
-
-------------------------------------------------------------
-
-TECHNOLOGY STACK
+## Technology Stack
 
 - Java 17+
 - Spring Boot
@@ -47,30 +39,25 @@ TECHNOLOGY STACK
 - Java NIO WatchService
 - Maven
 
-------------------------------------------------------------
+---
 
-PROJECT STRUCTURE
+## Project Structure
 
 com.FileWatcherService
 │
 ├── entity
-
 ├── repository
-
 ├── service
-
 ├── watcher
-
 └── FileWatcherServiceApplication.java
 
-------------------------------------------------------------
+---
 
-CONFIGURATION
+## Configuration
 
-Update application.properties:
+Update `application.properties`:
 
 spring.datasource.url=jdbc:mysql://localhost:3306/testdb
-
 spring.datasource.username=root
 spring.datasource.password=root
 
@@ -79,76 +66,84 @@ spring.jpa.show-sql=true
 
 file.import.path=D:/FileWatcher/import
 
-------------------------------------------------------------
+---
 
-REQUIRED FOLDER STRUCTURE
+## Required Folder Structure
 
 Create the following directories:
 
-D:/FileWatcher/import
-D:/FileWatcher/import/processed
-D:/FileWatcher/import/error
+D:/FileWatcher/import  
+D:/FileWatcher/import/processed  
+D:/FileWatcher/import/error  
 
 Place CSV files directly inside:
 
 D:/FileWatcher/import
 
-------------------------------------------------------------
+---
 
-CSV FORMAT (MANDATORY HEADER)
+## CSV Format (Required Header)
+
+The CSV file must include the following header row:
 
 name,email,phone
-Varun,varun@gmail.com,9876543210
-Rahul,rahul@gmail.com,9999999999
 
-Headers are case-sensitive.
+Example:
 
-------------------------------------------------------------
+name,email,phone  
+Varun,varun@gmail.com,9876543210  
+Rahul,rahul@gmail.com,9999999999  
 
-HOW TO RUN
+Note:
+- Headers are case-sensitive.
+- File must have `.csv` extension.
 
-1. Ensure MySQL is running
-2. Create database: testdb
-3. Run:
+---
 
-   mvn clean install
-   mvn spring-boot:run
+## How to Run
 
-4. Drop a CSV file into the import folder
-5. Observe logs and database entries
+1. Ensure MySQL is running.
+2. Create database `testdb`.
+3. Run the application:
 
-------------------------------------------------------------
+   mvn clean install  
+   mvn spring-boot:run  
 
-FEATURES
+4. Drop a CSV file into the import folder.
+5. Check console logs and database entries.
+
+---
+
+## Features
 
 - Event-driven file monitoring
 - Automatic CSV parsing
 - Batch database insertion
 - Transactional processing
-- Automatic file lifecycle handling
+- Automatic file lifecycle management
 - Configurable import path
 
-------------------------------------------------------------
+---
 
-LIMITATIONS
+## Limitations
 
 - Designed for single-server deployment
 - Not distributed-safe
-- Not recursive (does not monitor subdirectories)
-- Large files may require chunk processing optimization
+- Does not monitor subdirectories (non-recursive)
+- Large files may require chunk-based processing optimization
 
-------------------------------------------------------------
+---
 
-FUTURE IMPROVEMENTS
+## Future Improvements
 
-- Add multithreaded processing (ExecutorService)
-- Add retry mechanism
-- Add logging framework (SLF4J / Logback)
-- Add distributed lock for clustered deployment
-- Integrate with cloud storage (S3-based ingestion)
+- Multithreaded processing using ExecutorService
+- Retry mechanism for failed processing
+- Logging with SLF4J/Logback
+- Distributed lock for clustered deployment
+- Cloud-based ingestion (S3 + event-driven architecture)
 
-------------------------------------------------------------
+---
 
-AUTHOR
+## Author
 
-Developed as a backend system design practice project using Spring Boot and Java NIO.
+Backend system design practice project using Spring Boot and Java NIO.
