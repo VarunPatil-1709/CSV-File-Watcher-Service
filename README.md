@@ -54,9 +54,13 @@ PROJECT STRUCTURE
 com.FileWatcherService
 │
 ├── entity
+
 ├── repository
+
 ├── service
+
 ├── watcher
+
 └── FileWatcherServiceApplication.java
 
 ------------------------------------------------------------
@@ -66,6 +70,7 @@ CONFIGURATION
 Update application.properties:
 
 spring.datasource.url=jdbc:mysql://localhost:3306/testdb
+
 spring.datasource.username=root
 spring.datasource.password=root
 
