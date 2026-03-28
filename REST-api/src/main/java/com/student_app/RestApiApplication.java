@@ -1,14 +1,13 @@
-package com.FileWatcherService;
+package com.student_app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FileWatcherServiceApplication {
+public class RestApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FileWatcherServiceApplication.class, args);
-		
+		SpringApplication.run(RestApiApplication.class, args);
 	}
 
 }
